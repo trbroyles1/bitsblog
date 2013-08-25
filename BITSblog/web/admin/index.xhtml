@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../assets/layouts/admin.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="PageTitle">
+        dashboard
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="dashboardForm">
+            <div class="row">
+                <p:outputPanel id="pendingCommentsPanel" rendered="#{commentsBacker.allPendingComments.size() > 0}">
+                    <div class="span10">
+                        <h4>
+                            pending comments
+                        </h4>
+                        <table class="table">
+                            <tr>
+                                <th>actions</th>
+                                <th>post</th>
+                                <th>author email</th> 
+                                <th>date/time</th>
+                                <th>comment</th>
+                            </tr>
+                                <ui:repeat var="comment" value="#{commentsBacker.allPendingComments}">
+                                    <tr>
+                                        <td>
+                                            <p:commandLink 
+                                                id="commentApproveLink" 
+                                                actionListener="#{commentsBacker.approveComment(comment.commentId)}" 
+                                                update=":dashboardForm:pendingCommentsPanel">
+                                                approve
+                                            </p:commandLink>
+                                            |
+                                            <p:commandLink 
+                                                id="authorBanLink" 
+                                                actionListener="#{commentAuthorsBacker.banCommentAuthor(comment.commentAuthor.commentAuthorId)}" 
+                                                update=":dashboardForm:pendingCommentsPanel">
+                                                ban author
+                                            </p:commandLink>
+                                        </td>
+                                        <td>#{comment.postId.title}</td>
+                                        <td>#{comment.commentAuthor.emailAddress}</td>
+                                        <td>#{comment.friendlyPostTime}</td>
+                                        <td>#{comment.body}</td>
+                                    </tr>
+                                </ui:repeat>
+                        </table>
+                    </div>
+                </p:outputPanel>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
