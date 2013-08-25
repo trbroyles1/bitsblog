@@ -25,7 +25,7 @@ import javax.ejb.TransactionManagementType;
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class PostManager {
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
     
     @EJB
     private PostFacade postFacade;

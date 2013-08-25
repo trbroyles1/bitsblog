@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import net.sf.akismet.Akismet;
 
 /**
  *
@@ -44,7 +45,7 @@ public class CommentManager {
     @EJB
     private CommentAuthorFacade commentAuthorFacade;
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
     @Resource
     private SessionContext context;
 
@@ -60,7 +61,7 @@ public class CommentManager {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public AddResult addComment(String author, String email, String body, int postId) {
+    public AddResult addComment(String ipAddress, String author, String email, String body, int postId) {
         try {
             CommentAuthor a = createOrRetrieveCommentAuthor(author, email);
             if (a.getBanned()) {
@@ -68,7 +69,7 @@ public class CommentManager {
                 return AddResult.AUTHOR_BANNED;
             }
 
-            return createComment(postFacade.find(postId), a, body);
+            return createComment(ipAddress, postFacade.find(postId), a, body);
 
         } catch (Exception e) {
             context.setRollbackOnly();
@@ -126,12 +127,22 @@ public class CommentManager {
         return author;
     }
 
-    private AddResult createComment(Post post, CommentAuthor author, String body) {
+    private AddResult createComment(String ipAddress, Post post, CommentAuthor author, String body) {
         Comment comment = new Comment();
         comment.setPostId(post); //TODO: fix the method name on the comment entity!
         comment.setCommentAuthor(author);
         comment.setBody(body);
         comment.setDateCreated(new Date());
+        
+        //akismet filtering if a key is provided
+        if(statusProvider.getSettings().containsKey("akismet_key") && statusProvider.getSettings().containsKey("blog_url")){
+            Akismet akismet = new Akismet(
+                    statusProvider.getSettings().get("akismet_key").getSettingValue(), 
+                    statusProvider.getSettings().get("blog_url").getSettingValue());
+            if( akismet.commentCheck(ipAddress, "", "", "", Akismet.COMMENT_TYPE_COMMENT, author.getName(), author.getEmailAddress(), "", comment.getBody(), null)){
+                author.setCommentApprovalRequired(true);
+            }
+        }
 
         //TODO: Is there a better way of setting status on new comments?
         if (author.getCommentApprovalRequired() || post.getCommentApprovalRequired()) {
@@ -142,6 +153,7 @@ public class CommentManager {
 
         em.persist(comment);
         em.flush();
+        author.getCommentList().add(0, comment);
         post.getCommentList().add(0, comment);
 
         if (author.getCommentApprovalRequired()) {

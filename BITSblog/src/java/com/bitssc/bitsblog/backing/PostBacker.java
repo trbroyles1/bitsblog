@@ -8,7 +8,7 @@ import com.bitssc.bitsblog.entity.Post;
 import com.bitssc.bitsblog.entity.PostStatus;
 import com.bitssc.bitsblog.facade.PostFacade;
 import com.bitssc.bitsblog.session.PostManager;
-import com.bitssc.bitsblog.session.StatusProvider;
+import com.bitssc.bitsblog.session.ListsProvider;
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLBeanName;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
@@ -52,7 +52,7 @@ import javax.faces.view.ViewScoped;
 })
 public class PostBacker {
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
     
     @EJB
     private PostManager postManager;

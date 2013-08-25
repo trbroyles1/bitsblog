@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./assets/layouts/blog.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="PageTitle">
+        #{postBacker.currentPost.title}
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="bodyForm">
+            <div class="page-header">
+                <h1>#{blogBacker.blog.name}</h1>
+                <h5>#{blogBacker.blog.tagline}</h5>
+            </div>
+            <div class="row">
+                <div class="span2">
+                    <div class="sidebar-nav">
+                        <ul class="nav nav-list">
+                            <li class="nav-header">Pinned Posts</li>
+                            <ui:repeat var="post" value="#{postBacker.pinnedPosts}">
+                                <li class='#{post.postId == postBacker.currentPost.postId ? "active" : ""}'>
+                                    <h:outputLink value="#{request.contextPath}/post/#{post.postDateAsString}/#{post.linkableTitle}/"
+                                                  id="pinnedPostLink">
+                                        #{post.title}
+                                    </h:outputLink>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span8">
+                    <p:outputPanel id="postWrapper">
+                        <h3>#{postBacker.currentPost.title}</h3>
+                        <p class="muted">
+                            #{postBacker.currentPost.friendlyPostTime} by <u>#{postBacker.currentPost.postAuthor.firstName}</u>
+                        </p>
+                        <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
+                        <div class="row">
+                            <div class="span4">
+                                <h:outputLink value="#{request.contextPath}/post/#{postBacker.olderPost.postDateAsString}/#{postBacker.olderPost.linkableTitle}/"
+                                              id="moveOlderLink"
+                                              rendered="#{postBacker.olderPost != null}">
+                                    <span class="icon-arrow-left"></span> 
+                                    #{postBacker.olderPost.title}
+                                </h:outputLink>
+                            </div>
+                            <div class="span4">
+                                <h:outputLink value="#{request.contextPath}/post/#{postBacker.newerPost.postDateAsString}/#{postBacker.newerPost.linkableTitle}/"
+                                              id="moveNewerLink"
+                                              rendered="#{postBacker.newerPost != null}">
+                                    <div class="pull-right">
+                                        #{postBacker.newerPost.title}
+                                        <span class="icon-arrow-right"></span> 
+                                    </div>
+                                </h:outputLink>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="postCommentsWrapper">
+                        <div class="row">
+                            <div class="span8">
+                                <div class="commentbox">
+                                    <p:outputPanel rendered="#{!postBacker.currentPost.lockedForComments}">
+                                        <h4>share your thoughts</h4>
+                                        <p:messages id="commentValidationMessages" showDetail="true" />
+                                        <table class="commentTable">
+                                            <tr>
+                                                <td>
+                                                    name:
+                                                </td>
+                                                <td>
+                                                    <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
+                                                                 styleClass="commentField" required="true" label="name" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    email * <br />
+                                                    (not published)
+                                                </td>
+                                                <td>
+
+                                                    <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
+                                                                 styleClass="commentField" required="true" label="email" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><h:outputLabel for="newCommentText" value="speak *" /></td>
+                                                <td>
+                                                    <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
+                                                                     styleClass="commentField" required="true" label="comment" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>                                 
+                                                    <p:commandLink
+                                                        id="postcommentLink"
+                                                        actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
+                                                        oncomplete="Recaptcha.reload();"
+                                                        update=":bodyForm:postCommentsWrapper"
+                                                        styleClass="btn btn-primary pull-right">
+                                                        post it
+                                                    </p:commandLink>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{postBacker.currentPost.lockedForComments}">
+                                        <h6>
+                                            <em>comments have been turned off for this post</em>
+                                        </h6>
+                                    </p:outputPanel>
+                                </div>
+                                <ui:repeat var="comment" value="#{commentsBacker.getApprovedComments(postBacker.currentPost.postId)}">
+                                    <p class="muted">
+                                        #{comment.friendlyPostTime} by
+                                        #{comment.commentAuthor.name}
+                                    </p>
+                                    <p>
+                                        #{comment.body}
+                                    </p>
+                                    <hr />
+                                </ui:repeat>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+                <div class="span2">
+                    <span class="nav-header">About Me</span>
+                    <p>
+                        I live in Greenville SC and write software for Michelin.
+                    </p>
+                    <p>
+                        My favorite IDEs are NetBeans and Visual Studio.
+                    </p>
+                    <p>
+                        Technologies I love include:
+                        <ul>
+                            <li>c#</li>
+                            <li>LINQ</li>
+                            <li>ASP .NET MVC</li>
+                            <li>jQuery</li>
+                            <li>JPA</li>
+                            <li>JSF</li>
+                            <li>PrimeFaces</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>  
+</ui:composition>

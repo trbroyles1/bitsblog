@@ -5,7 +5,7 @@
 package com.bitssc.bitsblog.facade;
 
 import com.bitssc.bitsblog.entity.Post;
-import com.bitssc.bitsblog.session.StatusProvider;
+import com.bitssc.bitsblog.session.ListsProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import javax.persistence.Query;
 @Stateless
 public class PostFacade extends AbstractFacade<Post> {
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
     
     @PersistenceContext(unitName = "BITSblogPU")
     private EntityManager em;

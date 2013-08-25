@@ -7,7 +7,7 @@ package com.bitssc.bitsblog.backing;
 import com.bitssc.bitsblog.entity.Comment;
 import com.bitssc.bitsblog.facade.CommentFacade;
 import com.bitssc.bitsblog.session.CommentManager;
-import com.bitssc.bitsblog.session.StatusProvider;
+import com.bitssc.bitsblog.session.ListsProvider;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -28,7 +29,7 @@ public class CommentsBacker {
     @EJB
     private CommentManager commentManager;
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
     @EJB
     private CommentFacade commentFacade;
     private String newCommentAuthor = "";
@@ -84,7 +85,9 @@ public class CommentsBacker {
     }
 
     public void postComment(int postId) {
-        CommentManager.AddResult addComment = commentManager.addComment(newCommentAuthor, newCommentEmail, newCommentBody, postId);
+        String userIp = ((HttpServletRequest)getCurrentFacesContext().getExternalContext().getRequest()).getRemoteAddr();
+        
+        CommentManager.AddResult addComment = commentManager.addComment(userIp, newCommentAuthor, newCommentEmail, newCommentBody, postId);
         FacesMessage resultMessage;
         switch(addComment){
             case SUCCESS:

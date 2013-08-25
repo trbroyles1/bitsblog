@@ -5,7 +5,7 @@
 package com.bitssc.bitsblog.facade;
 
 import com.bitssc.bitsblog.entity.Comment;
-import com.bitssc.bitsblog.session.StatusProvider;
+import com.bitssc.bitsblog.session.ListsProvider;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +22,7 @@ import javax.persistence.Query;
 @Stateless
 public class CommentFacade extends AbstractFacade<Comment> {
     @EJB
-    private StatusProvider statusProvider;
+    private ListsProvider statusProvider;
 
     @PersistenceContext(unitName = "BITSblogPU")
     private EntityManager em;
