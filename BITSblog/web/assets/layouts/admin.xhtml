@@ -11,6 +11,19 @@
         <h:outputStylesheet name="css/blog.css"></h:outputStylesheet>
         <h:outputScript name="js/bootstrap.js"></h:outputScript>
         <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                jQuery.browser = {};
+                (function() {
+                    jQuery.browser.msie = false;
+                    jQuery.browser.version = 0;
+                    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+                        jQuery.browser.msie = true;
+                        jQuery.browser.version = RegExp.$1;
+                    }
+                })();
+            });
+        </script>
         <title>#{blogBacker.blog.name} :: <ui:insert name="PageTitle">Page Title</ui:insert> </title>
 
     </h:head>
@@ -25,6 +38,10 @@
                     <div class="span12">
                         <div class="page-header">
                             <h1>BITSblog Admin</h1>
+                            <div class="text-right">
+                                hi, #{request.getUserPrincipal().getName()}
+                                <h:outputLink value="#{request.contextPath}/logout">logout</h:outputLink>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -34,13 +51,13 @@
                             <i class="icon-pencil"></i>create new post
                         </h:outputLink>
                         <div class="sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li class="nav-header">administration</li>
-                            <li><h:outputLink value="#{request.contextPath}/admin/dashboard">dashboard</h:outputLink></li>
-                            <li><h:outputLink value="#{request.contextPath}/admin/posts">posts</h:outputLink></li>
-                            <li><h:outputLink value="#{request.contextPath}/admin/commentAuthors">comment authors</h:outputLink></li>
-                        </ul>
-                    </div>
+                            <ul class="nav nav-list">
+                                <li class="nav-header">administration</li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/dashboard">dashboard</h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/posts">posts</h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/commentAuthors">comment authors</h:outputLink></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="span10">
                         <h3><ui:insert name="PageTitle"></ui:insert></h3>

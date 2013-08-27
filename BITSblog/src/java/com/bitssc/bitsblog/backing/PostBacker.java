@@ -10,7 +10,6 @@ import com.bitssc.bitsblog.facade.PostFacade;
 import com.bitssc.bitsblog.session.PostManager;
 import com.bitssc.bitsblog.session.ListsProvider;
 import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLBeanName;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import java.text.ParseException;
@@ -83,6 +82,8 @@ public class PostBacker {
         List<Post> posts = postFacade.findNewest2Published();
         setCurrentPost(posts.size() > 0 ? posts.get(0) : null);
         olderPost = posts.size() > 1 ? posts.get(1) : null;
+        
+        postManager.postViewHit(currentPost);
     }
 
     @URLAction(mappingId = "linkedPost")
@@ -94,6 +95,8 @@ public class PostBacker {
             olderPost = posts[0];
             setCurrentPost(posts[1]);
             newerPost = posts[2];
+            
+            postManager.postViewHit(currentPost);
         }
     }
     
@@ -119,6 +122,14 @@ public class PostBacker {
     
     public List<Post> getPinnedPosts(){
         return postFacade.findPinned();
+    }
+    
+    public List<Post> getTopViewedPosts(){
+        return postFacade.findTopNByViews(5);
+    }
+    
+    public List<Post> getTopCommentedPosts(){
+        return postFacade.findTopNByComments(5);
     }
 
     public Post getOlderPost() {
@@ -204,13 +215,18 @@ public class PostBacker {
         currentPost.setPostStatus(statusProvider.getPostStatuses().get(editedPostStatus));
 
         if (currentPost.getPostId() == null) {
-            postManager.createPost(currentPost);
+            postManager.createPost(currentPost, getCurrentFacesContext().getExternalContext().getUserPrincipal().getName());
             getCurrentFacesContext().addMessage(null,new FacesMessage("Success",String.format("%s was created", currentPost.getTitle())));
         } else {
             postFacade.edit(currentPost);
             getCurrentFacesContext().addMessage(null, new FacesMessage("Success", String.format("%s was updated", currentPost.getTitle())));
         }
         showPostDetails(currentPost.getPostId());
+    }
+    
+    public void deletePost(int postId){
+        postFacade.remove(postFacade.find(postId));
+        showPostList();
     }
 
     public void cancelEdit() {

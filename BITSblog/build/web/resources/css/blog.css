@@ -76,4 +76,7 @@ table.commentTable{
 .control-group {
         margin-bottom: 10px;
         *zoom: 1;
-    }
+}
+.row-top-padded{
+    padding-top: 10px;
+}

@@ -8,6 +8,7 @@ import com.bitssc.bitsblog.entity.PostAuthor;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -25,6 +26,13 @@ public class PostAuthorFacade extends AbstractFacade<PostAuthor> {
 
     public PostAuthorFacade() {
         super(PostAuthor.class);
+    }
+    
+    public PostAuthor findByUserName(String userName){
+        Query postAuthorQuery = em.createNamedQuery("PostAuthor.findByUserName");
+        postAuthorQuery.setParameter("userName", userName);
+        return (PostAuthor)postAuthorQuery.getSingleResult();
+        
     }
     
 }

@@ -66,40 +66,31 @@
                             <div class="span8">
                                 <div class="commentbox">
                                     <p:outputPanel rendered="#{!postBacker.currentPost.lockedForComments}">
-                                        <h4>share your thoughts</h4>
+                                        <h4 class="muted">share your thoughts</h4>
                                         <p:messages id="commentValidationMessages" showDetail="true" />
-                                        <table class="commentTable">
-                                            <tr>
-                                                <td>
-                                                    name:
-                                                </td>
-                                                <td>
-                                                    <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
-                                                                 styleClass="commentField" required="true" label="name" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    email * <br />
-                                                    (not published)
-                                                </td>
-                                                <td>
-
-                                                    <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
+                                        <div class="row">
+                                            <div class="span4">
+                                                <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
+                                                                 styleClass="commentField" required="true" label="name">
+                                                    </p:inputText>
+                                                <p:watermark for="newCommentName" value="name" />
+                                            </div>
+                                            <div class="span4">
+                                                <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
                                                                  styleClass="commentField" required="true" label="email" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><h:outputLabel for="newCommentText" value="speak *" /></td>
-                                                <td>
-                                                    <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
+                                                <p:watermark for="newCommentEmail" value="email (not published)" />
+                                            </div>
+                                        </div>
+                                        <div class="row row-top-padded">
+                                            <div class="span8">
+                                                <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
                                                                      styleClass="commentField" required="true" label="comment" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>                                 
-                                                    <p:commandLink
+                                                <p:watermark for="newCommentText" value="your comments" />
+                                            </div>
+                                        </div>
+                                        <div class="row row-top-padded">
+                                            <div class="span8">
+                                                <p:commandLink
                                                         id="postcommentLink"
                                                         actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
                                                         oncomplete="Recaptcha.reload();"
@@ -107,9 +98,8 @@
                                                         styleClass="btn btn-primary pull-right">
                                                         post it
                                                     </p:commandLink>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                            </div>
+                                        </div>
                                     </p:outputPanel>
                                     <p:outputPanel rendered="#{postBacker.currentPost.lockedForComments}">
                                         <h6>

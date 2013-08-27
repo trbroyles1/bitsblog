@@ -42,6 +42,29 @@ public class PostFacade extends AbstractFacade<Post> {
         super(Post.class);
     }
     
+    public List<Post> findTopNByViews(int maximumResultSize){
+        Query postQuery = em.createNamedQuery("Post.findAllOrderedByViewsDescending");
+        postQuery.setMaxResults(maximumResultSize);
+        return postQuery.getResultList();
+    }
+    
+    public List<Post> findTopNByComments(int maximumResultSize){
+        Query postQuery = em.createNamedQuery("Post.findAll");
+        List<Post> posts = postQuery.getResultList();
+        Collections.sort(posts, new Comparator<Post>(){
+
+            @Override
+            public int compare(Post o1, Post o2) {
+                //If this looks backwards, it's because it is! We want the list ordered most comments first
+                //Sort is designed to order from smallest to largest so we just say it's "smaller" if it has more comments
+                return o1.getCommentList().size() > o2.getCommentList().size() ? -1 : 1;
+            }
+            
+        });
+        
+        return posts.subList(0, posts.size() < maximumResultSize ? posts.size() - 1 : maximumResultSize - 1);
+    }
+    
     public List<Post> findPinned(){
         Query postQuery = getEntityManager().createNamedQuery("Post.findByPinned");
         postQuery.setParameter("pinned", true);

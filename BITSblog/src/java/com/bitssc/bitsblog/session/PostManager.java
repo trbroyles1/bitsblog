@@ -40,11 +40,9 @@ public class PostManager {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public int createPost(Post post) {
+    public int createPost(Post post, String authorUserName) {
         try{
-            
-        post.setPostAuthor(postAuthorFacade.findAll().get(0));
-        post.setPostStatus(statusProvider.getPostStatuses().get(Post.STATUS_PUBLISHED));
+        post.setPostAuthor(postAuthorFacade.findByUserName(authorUserName));
         post.setDateCreated(new Date());
         postFacade.create(post);
         
@@ -55,6 +53,10 @@ public class PostManager {
             context.setRollbackOnly();
             return -1;
         }
+    }
+    public void postViewHit(Post post){
+        post.setNumberOfViews(post.getNumberOfViews() + 1);
+        postFacade.edit(post);
     }
 
 }

@@ -46,12 +46,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Post.findByDateLastModified", query = "SELECT p FROM Post p WHERE p.dateLastModified = :dateLastModified"),
     @NamedQuery(name = "Post.findByPinned", query = "SELECT p FROM Post p WHERE p.pinned = :pinned"),
     @NamedQuery(name = "Post.findAllDescending", query = "SELECT p FROM Post p ORDER BY p.postId DESC"),
+    @NamedQuery(name = "Post.findAllOrderedByViewsDescending", query = "SELECT p FROM Post p ORDER BY p.numberOfViews DESC"),
     @NamedQuery(name = "Post.findByStatusDescending", query = "SELECT p FROM Post p WHERE p.postStatus.name = :statusName ORDER BY p.postId DESC"),
     @NamedQuery(name = "Post.findOlderThanByStatusDescending", query = "SELECT p FROM Post p WHERE p.postId < :postId AND p.postStatus.name = :statusName ORDER BY p.postId DESC"),
     @NamedQuery(name = "Post.findByYearMonthDayTitle", query = "SELECT p FROM Post p WHERE p.dateCreated >= :targetDate AND p.dateCreated < :followingDate AND p.title = :title"),
     @NamedQuery(name = "Post.findNewerThanByStatusAscending", query = "SELECT p FROM Post p WHERE p.postId > :postId AND p.postStatus.name = :statusName ORDER BY p.postId ASC")
 })
 public class Post implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "numberOfViews")
+    private int numberOfViews;
     @Basic(optional = false)
     @NotNull
     @Column(name = "commentApprovalRequired")
@@ -102,7 +108,6 @@ public class Post implements Serializable {
     private PostStatus postStatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "postId")
     private List<Comment> commentList;
-    
     public static String STATUS_PUBLISHED = "published";
 
     public Post() {
@@ -201,7 +206,7 @@ public class Post implements Serializable {
     public void setCommentList(List<Comment> commentList) {
         this.commentList = commentList;
     }
-    
+
     public boolean getCommentApprovalRequired() {
         return commentApprovalRequired;
     }
@@ -217,18 +222,26 @@ public class Post implements Serializable {
     public void setLockedForComments(boolean lockedForComments) {
         this.lockedForComments = lockedForComments;
     }
-    
-    public String getFriendlyPostTime(){
+
+    public int getNumberOfViews() {
+        return numberOfViews;
+    }
+
+    public void setNumberOfViews(int numberOfViews) {
+        this.numberOfViews = numberOfViews;
+    }
+
+    public String getFriendlyPostTime() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy @ hh:mm aaa");
         return formatter.format(dateCreated).toLowerCase();
     }
-    
-    public String getPostDateAsString(){
+
+    public String getPostDateAsString() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(dateCreated);
     }
-    
-    public String getLinkableTitle(){
+
+    public String getLinkableTitle() {
         return title.replaceAll(" ", "-").toLowerCase();
     }
 
@@ -256,5 +269,4 @@ public class Post implements Serializable {
     public String toString() {
         return "com.bitssc.bitsblog.entity.Post[ postId=" + postId + " ]";
     }
-    
 }

@@ -11,8 +11,8 @@
 
     <ui:define name="body">
         <h:form id="dashboardForm">
-            <div class="row">
-                <p:outputPanel id="pendingCommentsPanel" rendered="#{commentsBacker.allPendingComments.size() > 0}">
+            <p:outputPanel id="pendingCommentsPanel" rendered="#{commentsBacker.allPendingComments.size() > 0}">
+                <div class="row">
                     <div class="span10">
                         <h4>
                             pending comments
@@ -25,32 +25,68 @@
                                 <th>date/time</th>
                                 <th>comment</th>
                             </tr>
-                                <ui:repeat var="comment" value="#{commentsBacker.allPendingComments}">
-                                    <tr>
-                                        <td>
-                                            <p:commandLink 
-                                                id="commentApproveLink" 
-                                                actionListener="#{commentsBacker.approveComment(comment.commentId)}" 
-                                                update=":dashboardForm:pendingCommentsPanel">
-                                                approve
-                                            </p:commandLink>
-                                            |
-                                            <p:commandLink 
-                                                id="authorBanLink" 
-                                                actionListener="#{commentAuthorsBacker.banCommentAuthor(comment.commentAuthor.commentAuthorId)}" 
-                                                update=":dashboardForm:pendingCommentsPanel">
-                                                ban author
-                                            </p:commandLink>
-                                        </td>
-                                        <td>#{comment.postId.title}</td>
-                                        <td>#{comment.commentAuthor.emailAddress}</td>
-                                        <td>#{comment.friendlyPostTime}</td>
-                                        <td>#{comment.body}</td>
-                                    </tr>
-                                </ui:repeat>
+                            <ui:repeat var="comment" value="#{commentsBacker.allPendingComments}">
+                                <tr>
+                                    <td>
+                                        <p:commandLink 
+                                            id="commentApproveLink" 
+                                            actionListener="#{commentsBacker.approveComment(comment.commentId)}" 
+                                            update=":dashboardForm:pendingCommentsPanel">
+                                            approve
+                                        </p:commandLink>
+                                        |
+                                        <p:commandLink 
+                                            id="authorBanLink" 
+                                            actionListener="#{commentAuthorsBacker.banCommentAuthor(comment.commentAuthor.commentAuthorId)}" 
+                                            update=":dashboardForm:pendingCommentsPanel">
+                                            ban author
+                                        </p:commandLink>
+                                    </td>
+                                    <td>#{comment.postId.title}</td>
+                                    <td>#{comment.commentAuthor.emailAddress}</td>
+                                    <td>#{comment.friendlyPostTime}</td>
+                                    <td>#{comment.body}</td>
+                                </tr>
+                            </ui:repeat>
                         </table>
                     </div>
-                </p:outputPanel>
+                </div>
+                <hr />
+            </p:outputPanel>
+
+            <div class="row">
+                <div class="span5">
+                    <h4>top viewed posts</h4>
+                    <table class="table">
+                        <tr>
+                            <th>post</th>
+                            <th>views</th>
+                        </tr>
+
+                        <ui:repeat var="post" value="#{postBacker.topViewedPosts}">
+                            <tr>
+                                <td>#{post.title}</td>
+                                <td>#{post.numberOfViews}</td>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </div>
+                <div class="span5">
+                    <h4>top commented posts</h4>
+                    <table class="table">
+                        <tr>
+                            <th>post</th>
+                            <th>comments</th>
+                        </tr>
+
+                        <ui:repeat var="post" value="#{postBacker.topCommentedPosts}">
+                            <tr>
+                                <td>#{post.title}</td>
+                                <td>#{post.commentList.size()}</td>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </div>
             </div>
         </h:form>
     </ui:define>
