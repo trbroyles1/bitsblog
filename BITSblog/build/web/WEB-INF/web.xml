@@ -3,6 +3,7 @@
     <description>An open source Java EE blogging platform</description>
     <display-name>BITSblog</display-name>
     <context-param>
+        <description>Development, Release</description>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>

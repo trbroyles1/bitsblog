@@ -8,10 +8,12 @@ import com.bitssc.bitsblog.entity.CommentStatus;
 import com.bitssc.bitsblog.entity.PageStatus;
 import com.bitssc.bitsblog.entity.PostStatus;
 import com.bitssc.bitsblog.entity.Setting;
+import com.bitssc.bitsblog.entity.Tag;
 import com.bitssc.bitsblog.facade.CommentStatusFacade;
 import com.bitssc.bitsblog.facade.PageStatusFacade;
 import com.bitssc.bitsblog.facade.PostStatusFacade;
 import com.bitssc.bitsblog.facade.SettingFacade;
+import com.bitssc.bitsblog.facade.TagFacade;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -28,6 +30,9 @@ public class ListsProvider {
     private SettingFacade settingFacade;
     
     @EJB
+    private TagFacade tagFacade;
+    
+    @EJB
     private PageStatusFacade pageStatusFacade;
     @EJB
     private CommentStatusFacade commentStatusFacade;
@@ -40,6 +45,7 @@ public class ListsProvider {
     private Map<String,CommentStatus> commentStatuses;
     private Map<String,PostStatus> postStatuses;
     private Map<String, Setting> settings;
+    private Map<String, Tag> postTags;
     
 
     /**
@@ -69,6 +75,11 @@ public class ListsProvider {
         for(Setting s : settingFacade.findAll()){
             settings.put(s.getSettingKey(),s);
         }
+        
+        postTags = new HashMap<>();
+        for (Tag t : tagFacade.findAll()){
+            postTags.put(t.getName(), t);
+        }
     }
 
     public Map<String,PageStatus> getPageStatuses() {
@@ -81,6 +92,10 @@ public class ListsProvider {
 
     public Map<String,PostStatus> getPostStatuses() {
         return postStatuses;
+    }
+    
+    public Map<String,Tag> getPostTags(){
+        return postTags;
     }
     
     public Map<String,Setting> getSettings(){

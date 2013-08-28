@@ -7,6 +7,9 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <ui:define name="head">
+    </ui:define>
+
     <ui:define name="PageTitle">
         #{postBacker.currentPost.title}
     </ui:define>
@@ -39,7 +42,6 @@
                         <p class="muted">
                             #{postBacker.currentPost.friendlyPostTime} by <u>#{postBacker.currentPost.postAuthor.firstName}</u>
                         </p>
-                        <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
                         <div class="row">
                             <div class="span4">
                                 <h:outputLink value="#{request.contextPath}/post/#{postBacker.olderPost.postDateAsString}/#{postBacker.olderPost.linkableTitle}/"
@@ -60,6 +62,13 @@
                                 </h:outputLink>
                             </div>
                         </div>
+                        <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
+                        <h6>
+                            filed under&nbsp;
+                            <ui:repeat var="tag" value="#{postBacker.currentPost.tagList}">
+                                <span class="light-underline">#{tag.name}</span>
+                            </ui:repeat>
+                        </h6>
                     </p:outputPanel>
                     <p:outputPanel id="postCommentsWrapper">
                         <div class="row">
@@ -71,33 +80,33 @@
                                         <div class="row">
                                             <div class="span4">
                                                 <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
-                                                                 styleClass="commentField" required="true" label="name">
-                                                    </p:inputText>
+                                                             styleClass="commentField" required="true" label="name">
+                                                </p:inputText>
                                                 <p:watermark for="newCommentName" value="name" />
                                             </div>
                                             <div class="span4">
                                                 <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
-                                                                 styleClass="commentField" required="true" label="email" />
+                                                             styleClass="commentField" required="true" label="email" />
                                                 <p:watermark for="newCommentEmail" value="email (not published)" />
                                             </div>
                                         </div>
                                         <div class="row row-top-padded">
                                             <div class="span8">
                                                 <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
-                                                                     styleClass="commentField" required="true" label="comment" />
+                                                                 styleClass="commentField" required="true" label="comment" />
                                                 <p:watermark for="newCommentText" value="your comments" />
                                             </div>
                                         </div>
                                         <div class="row row-top-padded">
                                             <div class="span8">
                                                 <p:commandLink
-                                                        id="postcommentLink"
-                                                        actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
-                                                        oncomplete="Recaptcha.reload();"
-                                                        update=":bodyForm:postCommentsWrapper"
-                                                        styleClass="btn btn-primary pull-right">
-                                                        post it
-                                                    </p:commandLink>
+                                                    id="postcommentLink"
+                                                    actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
+                                                    oncomplete="Recaptcha.reload();"
+                                                    update=":bodyForm:postCommentsWrapper"
+                                                    styleClass="btn btn-primary pull-right">
+                                                    post it
+                                                </p:commandLink>
                                             </div>
                                         </div>
                                     </p:outputPanel>
