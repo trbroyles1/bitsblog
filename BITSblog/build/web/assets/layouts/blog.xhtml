@@ -2,7 +2,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -41,7 +44,55 @@
             -->
             <!-- Begin page content -->
             <div class="container">
-                <ui:insert name="body">Top</ui:insert>
+                <h:form id="bodyForm">
+                    <div class="page-header">
+                        <h1>#{blogBacker.blog.name}</h1>
+                        <h5>#{blogBacker.blog.tagline}</h5>
+                    </div>
+                    <div class="row">
+                        <div class="span2">
+                            <div class="sidebar-nav">
+                                <ul class="nav nav-list">
+                                    <li class="nav-header">Pinned Posts</li>
+                                    <c:forEach var="post" items="#{postBacker.pinnedPosts}">
+                                        <li class='#{post.postId == postBacker.currentPost.postId ? "active" : ""}'>
+                                            <h:outputLink value="#{request.contextPath}/post/#{post.postDateAsString}/#{post.linkableTitle}"
+                                                          >
+                                                #{post.title}
+                                            </h:outputLink>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="span8">
+                            <ui:insert name="body">Top</ui:insert>
+                        </div>
+
+                        <div class="span2">
+                            <span class="nav-header">About Me</span>
+                            <p>
+                                I live in Greenville SC and write software for Michelin.
+                            </p>
+                            <p>
+                                My favorite IDEs are NetBeans and Visual Studio.
+                            </p>
+                            <p>
+                                Technologies I love include:
+                                <ul>
+                                    <li>c#</li>
+                                    <li>LINQ</li>
+                                    <li>ASP .NET MVC</li>
+                                    <li>jQuery</li>
+                                    <li>JPA</li>
+                                    <li>JSF</li>
+                                    <li>PrimeFaces</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </h:form>
             </div>
 
             <div id="push"></div>

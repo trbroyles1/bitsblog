@@ -15,143 +15,103 @@
     </ui:define>
 
     <ui:define name="body">
-        <h:form id="bodyForm">
-            <div class="page-header">
-                <h1>#{blogBacker.blog.name}</h1>
-                <h5>#{blogBacker.blog.tagline}</h5>
-            </div>
+        <p:outputPanel id="postWrapper">
+            <h3>#{postBacker.currentPost.title}</h3>
+            <p class="muted">
+                #{postBacker.currentPost.friendlyPostTime} by <u>#{postBacker.currentPost.postAuthor.firstName}</u>
+            </p>
             <div class="row">
-                <div class="span2">
-                    <div class="sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li class="nav-header">Pinned Posts</li>
-                            <ui:repeat var="post" value="#{postBacker.pinnedPosts}">
-                                <li class='#{post.postId == postBacker.currentPost.postId ? "active" : ""}'>
-                                    <h:outputLink value="#{request.contextPath}/post/#{post.postDateAsString}/#{post.linkableTitle}/"
-                                                  id="pinnedPostLink">
-                                        #{post.title}
-                                    </h:outputLink>
-                                </li>
-                            </ui:repeat>
-                        </ul>
-                    </div>
+                <div class="span4">
+                    <h:outputLink value="#{request.contextPath}/post/#{postBacker.olderPost.postDateAsString}/#{postBacker.olderPost.linkableTitle}"
+                                  id="moveOlderLink"
+                                  rendered="#{postBacker.olderPost != null}">
+                        <span class="icon-arrow-left"></span> 
+                        #{postBacker.olderPost.title}
+                    </h:outputLink>
                 </div>
-                <div class="span8">
-                    <p:outputPanel id="postWrapper">
-                        <h3>#{postBacker.currentPost.title}</h3>
-                        <p class="muted">
-                            #{postBacker.currentPost.friendlyPostTime} by <u>#{postBacker.currentPost.postAuthor.firstName}</u>
-                        </p>
-                        <div class="row">
-                            <div class="span4">
-                                <h:outputLink value="#{request.contextPath}/post/#{postBacker.olderPost.postDateAsString}/#{postBacker.olderPost.linkableTitle}/"
-                                              id="moveOlderLink"
-                                              rendered="#{postBacker.olderPost != null}">
-                                    <span class="icon-arrow-left"></span> 
-                                    #{postBacker.olderPost.title}
-                                </h:outputLink>
-                            </div>
-                            <div class="span4">
-                                <h:outputLink value="#{request.contextPath}/post/#{postBacker.newerPost.postDateAsString}/#{postBacker.newerPost.linkableTitle}/"
-                                              id="moveNewerLink"
-                                              rendered="#{postBacker.newerPost != null}">
-                                    <div class="pull-right">
-                                        #{postBacker.newerPost.title}
-                                        <span class="icon-arrow-right"></span> 
-                                    </div>
-                                </h:outputLink>
-                            </div>
+                <div class="span4">
+                    <h:outputLink value="#{request.contextPath}/post/#{postBacker.newerPost.postDateAsString}/#{postBacker.newerPost.linkableTitle}"
+                                  id="moveNewerLink"
+                                  rendered="#{postBacker.newerPost != null}">
+                        <div class="pull-right">
+                            #{postBacker.newerPost.title}
+                            <span class="icon-arrow-right"></span> 
                         </div>
-                        <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
-                        <h6>
-                            filed under&nbsp;
-                            <ui:repeat var="tag" value="#{postBacker.currentPost.tagList}">
-                                <span class="light-underline">#{tag.name}</span>
-                            </ui:repeat>
-                        </h6>
-                    </p:outputPanel>
-                    <p:outputPanel id="postCommentsWrapper">
-                        <div class="row">
-                            <div class="span8">
-                                <div class="commentbox">
-                                    <p:outputPanel rendered="#{!postBacker.currentPost.lockedForComments}">
-                                        <h4 class="muted">share your thoughts</h4>
-                                        <p:messages id="commentValidationMessages" showDetail="true" />
-                                        <div class="row">
-                                            <div class="span4">
-                                                <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
-                                                             styleClass="commentField" required="true" label="name">
-                                                </p:inputText>
-                                                <p:watermark for="newCommentName" value="name" />
-                                            </div>
-                                            <div class="span4">
-                                                <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
-                                                             styleClass="commentField" required="true" label="email" />
-                                                <p:watermark for="newCommentEmail" value="email (not published)" />
-                                            </div>
-                                        </div>
-                                        <div class="row row-top-padded">
-                                            <div class="span8">
-                                                <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
-                                                                 styleClass="commentField" required="true" label="comment" />
-                                                <p:watermark for="newCommentText" value="your comments" />
-                                            </div>
-                                        </div>
-                                        <div class="row row-top-padded">
-                                            <div class="span8">
-                                                <p:commandLink
-                                                    id="postcommentLink"
-                                                    actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
-                                                    oncomplete="Recaptcha.reload();"
-                                                    update=":bodyForm:postCommentsWrapper"
-                                                    styleClass="btn btn-primary pull-right">
-                                                    post it
-                                                </p:commandLink>
-                                            </div>
-                                        </div>
-                                    </p:outputPanel>
-                                    <p:outputPanel rendered="#{postBacker.currentPost.lockedForComments}">
-                                        <h6>
-                                            <em>comments have been turned off for this post</em>
-                                        </h6>
-                                    </p:outputPanel>
-                                </div>
-                                <ui:repeat var="comment" value="#{commentsBacker.getApprovedComments(postBacker.currentPost.postId)}">
-                                    <p class="muted">
-                                        #{comment.friendlyPostTime} by
-                                        #{comment.commentAuthor.name}
-                                    </p>
-                                    <p>
-                                        #{comment.body}
-                                    </p>
-                                    <hr />
-                                </ui:repeat>
-                            </div>
-                        </div>
-                    </p:outputPanel>
-                </div>
-                <div class="span2">
-                    <span class="nav-header">About Me</span>
-                    <p>
-                        I live in Greenville SC and write software for Michelin.
-                    </p>
-                    <p>
-                        My favorite IDEs are NetBeans and Visual Studio.
-                    </p>
-                    <p>
-                        Technologies I love include:
-                        <ul>
-                            <li>c#</li>
-                            <li>LINQ</li>
-                            <li>ASP .NET MVC</li>
-                            <li>jQuery</li>
-                            <li>JPA</li>
-                            <li>JSF</li>
-                            <li>PrimeFaces</li>
-                        </ul>
-                    </p>
+                    </h:outputLink>
                 </div>
             </div>
-        </h:form>
+            <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
+            <p:outputPanel rendered="#{postBacker.currentPost.tagList.size() > 0}">
+                <h6>
+                    filed under&nbsp;
+                    <ui:repeat var="tag" value="#{postBacker.currentPost.tagList}">
+                        <h:outputLink value="#{request.contextPath}/tag/#{tag.name}"
+                                      id="tagLink">
+                            <span class="light-underline">#{tag.name}</span>
+                        </h:outputLink>
+                    </ui:repeat>
+                </h6>
+            </p:outputPanel>
+        </p:outputPanel>
+        <p:outputPanel id="postCommentsWrapper">
+            <div class="row">
+                <div class="span8">
+                    <div class="commentbox">
+                        <p:outputPanel rendered="#{!postBacker.currentPost.lockedForComments}">
+                            <h4 class="muted">share your thoughts</h4>
+                            <p:messages id="commentValidationMessages" showDetail="true" />
+                            <div class="row">
+                                <div class="span4">
+                                    <p:inputText id="newCommentName" value="#{commentsBacker.newCommentAuthor}" 
+                                                 styleClass="commentField" required="true" label="name">
+                                    </p:inputText>
+                                    <p:watermark for="newCommentName" value="name" />
+                                </div>
+                                <div class="span4">
+                                    <p:inputText id="newCommentEmail" value="#{commentsBacker.newCommentEmail}" 
+                                                 styleClass="commentField" required="true" label="email" />
+                                    <p:watermark for="newCommentEmail" value="email (not published)" />
+                                </div>
+                            </div>
+                            <div class="row row-top-padded">
+                                <div class="span8">
+                                    <p:inputTextarea id="newCommentText" value="#{commentsBacker.newCommentBody}" 
+                                                     styleClass="commentField" required="true" label="comment" />
+                                    <p:watermark for="newCommentText" value="your comments" />
+                                </div>
+                            </div>
+                            <div class="row row-top-padded">
+                                <div class="span8">
+                                    <p:commandLink
+                                        id="postcommentLink"
+                                        actionListener="#{commentsBacker.postComment(postBacker.currentPost.postId)}"
+                                        oncomplete="Recaptcha.reload();"
+                                        update=":bodyForm:postCommentsWrapper"
+                                        styleClass="btn btn-primary pull-right">
+                                        post it
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{postBacker.currentPost.lockedForComments}">
+                            <h6>
+                                <em>comments have been turned off for this post</em>
+                            </h6>
+                        </p:outputPanel>
+                    </div>
+                    <ui:repeat var="comment" value="#{commentsBacker.getApprovedComments(postBacker.currentPost.postId)}">
+                        <p class="muted">
+                            #{comment.friendlyPostTime} by
+                            #{comment.commentAuthor.name}
+                        </p>
+                        <p>
+                            #{comment.body}
+                        </p>
+                        <hr />
+                    </ui:repeat>
+                </div>
+            </div>
+        </p:outputPanel>
     </ui:define>  
+
 </ui:composition>

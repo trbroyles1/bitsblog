@@ -39,7 +39,7 @@ import javax.faces.view.ViewScoped;
             viewId = "/faces/index.xhtml"),
     @URLMapping(
             id = "linkedPost",
-            pattern = "/post/#{postBacker.targetPostDate}/#{postBacker.targetPostTitle}/",
+            pattern = "/post/#{postBacker.targetPostDate}/#{postBacker.targetPostTitle}",
             viewId = "/faces/index.xhtml"),
     @URLMapping(
             id = "postsAdministration",
@@ -50,6 +50,11 @@ import javax.faces.view.ViewScoped;
             id = "newPost",
             pattern = "/admin/posts/newPost",
             viewId = "/faces/admin/posts.xhtml"
+        ),
+    @URLMapping(
+            id = "postsWithTag",
+            pattern="/tag/#{postBacker.targetPostTag}",
+            viewId = "/faces/postsWithTag.xhtml"
         )
 })
 public class PostBacker {
@@ -72,6 +77,7 @@ public class PostBacker {
     private Boolean postEditVisible;
     private String targetPostDate;
     private String targetPostTitle;
+    private String targetPostTag;
     private String editedPostStatus;
     private String editedPostTags;
 
@@ -139,6 +145,10 @@ public class PostBacker {
     public List<Post> getTopCommentedPosts(){
         return postFacade.findTopNByComments(5);
     }
+    
+    public List<Post> getPostsForTargetTag(){
+        return postFacade.findByTag(statusProvider.getPostTags().get(targetPostTag));
+    }
 
     public Post getOlderPost() {
         return olderPost;
@@ -172,6 +182,14 @@ public class PostBacker {
     public void setTargetPostTitle(String targetPostTitle) {
         this.targetPostTitle = targetPostTitle.replaceAll("-", " ");
     }
+    
+    public String getTargetPostTag(){
+        return targetPostTag;
+    }
+    
+    public void setTargetPostTag(String value){
+        targetPostTag = value;
+    }
 
     public Boolean getPostListVisible() {
         return postListVisible;
@@ -192,9 +210,11 @@ public class PostBacker {
     public void setEditedPostStatus(String editedPostStatus) {
         this.editedPostStatus = editedPostStatus;
     }
+    
     public String getEditedPostTags(){
         return editedPostTags;
     }
+    
     public void setEditedPostTags(String value){
         editedPostTags = value;
     }

@@ -14,7 +14,8 @@
             function setupTagPicker() {
                 $(".tag-picker").select2({
                     tags: [#{postBacker.postTags}],
-                    tokenSeparators: [",", " "]
+                    tokenSeparators: [",", " "],
+                    dropdownAutoWidth: true
                 });
             }
         </script>

@@ -5,6 +5,7 @@
 package com.bitssc.bitsblog.facade;
 
 import com.bitssc.bitsblog.entity.Post;
+import com.bitssc.bitsblog.entity.Tag;
 import com.bitssc.bitsblog.session.ListsProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +77,13 @@ public class PostFacade extends AbstractFacade<Post> {
         postQuery.setParameter("statusName", Post.STATUS_PUBLISHED);
         postQuery.setMaxResults(2);
         
+        return postQuery.getResultList();
+    }
+    
+    public List<Post> findByTag(Tag tag){
+        Query postQuery = em.createNamedQuery("Post.findByCategory");
+        postQuery.setParameter("tag", tag);
+     
         return postQuery.getResultList();
     }
     

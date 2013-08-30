@@ -35,7 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Tag.findAll", query = "SELECT t FROM Tag t"),
     @NamedQuery(name = "Tag.findByTagId", query = "SELECT t FROM Tag t WHERE t.tagId = :tagId"),
     @NamedQuery(name = "Tag.findByName", query = "SELECT t FROM Tag t WHERE t.name = :name"),
-    @NamedQuery(name = "Tag.findByDateCreated", query = "SELECT t FROM Tag t WHERE t.dateCreated = :dateCreated")})
+    @NamedQuery(name = "Tag.findByDateCreated", query = "SELECT t FROM Tag t WHERE t.dateCreated = :dateCreated"),
+    @NamedQuery(name = "Post.findByCategory", query = "SELECT t.postList FROM Tag t WHERE t = :tag"),
+})
 public class Tag implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./assets/layouts/blog.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="PageTitle">
+        Posts about #{postBacker.targetPostTag}
+    </ui:define>
+
+    <ui:define name="body">
+        <h3>Posts about #{postBacker.targetPostTag}</h3>
+        <ul>
+            <ui:repeat var="post" value="#{postBacker.postsForTargetTag}">
+                <li>
+                    <h:outputLink value="#{request.contextPath}/post/#{post.postDateAsString}/#{post.linkableTitle}"
+                                  id="tagPostLink">
+                        #{post.title} | #{post.friendlyPostTime}
+                    </h:outputLink>
+                </li>
+            </ui:repeat>
+        </ul>
+    </ui:define>
+
+</ui:composition>
