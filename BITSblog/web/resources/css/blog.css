@@ -84,3 +84,17 @@ table.commentTable{
     color: #000;
     border-bottom: solid lightgrey 1px;
 }
+
+.blog-header{
+    background: url("#{request.contextPath}/img/code.jpg");
+    background-position-y: -233;
+    background-position-x: 200;
+}
+
+.blog-title{
+    font-family: Cinzel;
+}
+
+.blog-tagline{
+    font-family: PT Sans Caption;
+}

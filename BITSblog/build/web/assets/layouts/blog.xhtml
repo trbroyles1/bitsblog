@@ -11,6 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet name="css/bootstrap.bitsblog.css"></h:outputStylesheet>
         <h:outputStylesheet name="css/blog.css"></h:outputStylesheet>
+        <link href='http://fonts.googleapis.com/css?family=Cinzel:400,700,900|PT+Sans+Caption:400,700' rel='stylesheet' type='text/css' />
         <h:outputScript name="js/bootstrap.min.js"></h:outputScript>
         <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         <title>#{blogBacker.blog.name} :: <ui:insert name="PageTitle">Page Title</ui:insert> </title>
@@ -45,9 +46,9 @@
             <!-- Begin page content -->
             <div class="container">
                 <h:form id="bodyForm">
-                    <div class="page-header">
-                        <h1>#{blogBacker.blog.name}</h1>
-                        <h5>#{blogBacker.blog.tagline}</h5>
+                    <div class="page-header blog-header">
+                        <h1 class="blog-title">#{blogBacker.blog.name}</h1>
+                        <h5 class="blog-tagline">#{blogBacker.blog.tagline}</h5>
                     </div>
                     <div class="row">
                         <div class="span2">

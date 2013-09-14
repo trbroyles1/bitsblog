@@ -13,7 +13,7 @@
         <script type="text/javascript">
             function setupTagPicker() {
                 $(".tag-picker").select2({
-                    tags: [#{postBacker.postTags}],
+                    tags: [#{postAdminBacker.postTags}],
                     tokenSeparators: [",", " "],
                     dropdownAutoWidth: true
                 });
@@ -27,7 +27,7 @@
     <ui:define name="body">
         <h:form id="postsForm">
             <p:outputPanel id="postsWrapper">
-                <p:outputPanel id="postsPanel" rendered="#{postBacker.postListVisible}">
+                <p:outputPanel id="postsPanel" rendered="#{postAdminBacker.postListVisible}">
                     <table class="table">
                         <tr>
                             <th>actions</th>
@@ -41,14 +41,14 @@
                                 <td>
                                     <p:commandLink 
                                         id="rowDetailsLink" 
-                                        actionListener="#{postBacker.showPostDetails(post.postId)}" 
+                                        actionListener="#{postAdminBacker.showPostDetails(post.postId)}" 
                                         update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper">
                                         view
                                     </p:commandLink>
                                     | 
                                     <p:commandLink
                                         id="rowEditLink"
-                                        actionListener="#{postBacker.showPostEdit(post.postId)}"
+                                        actionListener="#{postAdminBacker.showPostEdit(post.postId)}"
                                         oncomplete="setupTagPicker()"
                                         update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper">
                                         edit
@@ -76,37 +76,37 @@
                     <li>
                         <p:commandLink styleClass="btn" 
                                        id="postListButton" 
-                                       actionListener="#{postBacker.showPostList()}"
+                                       actionListener="#{postAdminBacker.showPostList()}"
                                        update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper"
-                                       rendered="#{postBacker.postDetailsVisible || postBacker.postEditVisible}">
+                                       rendered="#{postAdminBacker.postDetailsVisible || postAdminBacker.postEditVisible}">
                             <i class="icon-arrow-left"></i>back to list
                         </p:commandLink>
                     </li>
                     <li>
                         <p:commandLink styleClass="btn" 
                                        id="postEditButton" 
-                                       actionListener="#{postBacker.showPostEdit(postBacker.currentPost.postId)}"
+                                       actionListener="#{postAdminBacker.editPost(postAdminBacker.currentPost.postId)}"
                                        oncomplete="setupTagPicker()"
                                        update=":postsForm:postDetailsEditWrapper,:postsForm:postTextEditor"
-                                       rendered="#{postBacker.postDetailsVisible}">
+                                       rendered="#{postAdminBacker.postDetailsVisible}">
                             <i class="icon-edit"></i> edit
                         </p:commandLink>
                     </li>
                     <li>
                         <p:commandLink   styleClass="btn btn-danger" 
                                          id="postDeleteButton" 
-                                         actionListener="#{postBacker.deletePost(postBacker.currentPost.postId)}"
+                                         actionListener="#{postAdminBacker.deletePost(postAdminBacker.currentPost.postId)}"
                                          update="postsForm:postDetailsEditWrapper,postsForm:postsWrapper"
-                                         rendered="#{postBacker.postDetailsVisible}">
+                                         rendered="#{postAdminBacker.postDetailsVisible}">
                             <i class="icon-trash"></i>delete (no confirm yet)
                         </p:commandLink>    
                     </li>
                     <li>
                         <p:commandLink  styleClass="btn btn-primary" 
                                         id="postSaveButton" 
-                                        actionListener="#{postBacker.savePost()}"
+                                        actionListener="#{postAdminBacker.savePost()}"
                                         update=":postsForm:postDetailsEditWrapper"
-                                        rendered="#{postBacker.postEditVisible}">
+                                        rendered="#{postAdminBacker.postEditVisible}">
                             <i class="icon-ok"></i> save
                         </p:commandLink>
 
@@ -114,19 +114,19 @@
                     <li>
                         <p:commandLink   styleClass="btn" 
                                          id="postEditCancelButton" 
-                                         actionListener="#{postBacker.cancelEdit()}"
+                                         actionListener="#{postAdminBacker.cancelEdit()}"
                                          immediate="true"
                                          update="postsForm:postDetailsEditWrapper,postsForm:postsWrapper"
-                                         rendered="#{postBacker.postEditVisible}">
+                                         rendered="#{postAdminBacker.postEditVisible}">
                             <i class="icon-remove"></i> cancel
                         </p:commandLink>    
                     </li>
                 </ul>
-                <p:panel id="postDetailsPanel" rendered="#{postBacker.postDetailsVisible}">
-                    <h3>#{postBacker.currentPost.title}</h3>
-                    <h5>by #{postBacker.currentPost.postAuthor.firstName} on #{postBacker.currentPost.postDateAsString}</h5>
+                <p:panel id="postDetailsPanel" rendered="#{postAdminBacker.postDetailsVisible}">
+                    <h3>#{postAdminBacker.currentPost.title}</h3>
+                    <h5>by #{postAdminBacker.currentPost.postAuthor.firstName} on #{postAdminBacker.currentPost.postDateAsString}</h5>
                     <h5>
-                        <ui:repeat var="tag" value="#{postBacker.currentPost.tagList}">
+                        <ui:repeat var="tag" value="#{postAdminBacker.currentPost.tagList}">
                             <u>#{tag.name}</u>
                         </ui:repeat>
                     </h5>
@@ -134,19 +134,19 @@
                         <table><tr><td>
 
                                     <label class="span1">
-                                        <h:outputText value="#{postBacker.currentPost.postStatus.name}"/>
+                                        <h:outputText value="#{postAdminBacker.currentPost.postStatus.name}"/>
                                     </label>
-                                    <p:outputPanel rendered="#{postBacker.currentPost.pinned}">
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.pinned}">
                                         <label class="span1 text-left">
                                             pinned
                                         </label>
                                     </p:outputPanel>
-                                    <p:outputPanel rendered="#{postBacker.currentPost.commentApprovalRequired}">
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.commentApprovalRequired}">
                                         <label class="span3 text-left">
                                             comment approval required
                                         </label>
                                     </p:outputPanel>
-                                    <p:outputPanel rendered="#{postBacker.currentPost.lockedForComments}">
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.lockedForComments}">
                                         <label class="span2 text-left">
                                             locked for comments
                                         </label>
@@ -156,7 +156,7 @@
                     </div>
                     <p:accordionPanel>
                         <p:tab title="post">
-                            <h:outputText value="#{postBacker.currentPost.body}" escape="false" />
+                            <h:outputText value="#{postAdminBacker.currentPost.body}" escape="false" />
                         </p:tab>
                         <p:tab title="comments">
                             <table class="table">
@@ -167,7 +167,7 @@
                                     <th>status</th>
                                     <th>comment</th>
                                 </tr>
-                                <ui:repeat var="comment" value="#{commentsBacker.getAllCommentsForPost(postBacker.currentPost.postId)}">
+                                <ui:repeat var="comment" value="#{commentsBacker.getAllCommentsForPost(postAdminBacker.currentPost.postId)}">
                                     <tr>
                                         <td>
                                             <p:commandLink 
@@ -197,40 +197,40 @@
                         </p:tab>
                     </p:accordionPanel>
                 </p:panel>
-                <p:panel id="postEditPanel" rendered="#{postBacker.postEditVisible}">
+                <p:panel id="postEditPanel" rendered="#{postAdminBacker.postEditVisible}">
                     <div class="controls controls-row">
-                        <h3><h:inputText value="#{postBacker.currentPost.title}" styleClass="input-block-level" /></h3>
+                        <h3><h:inputText value="#{postAdminBacker.currentPost.title}" styleClass="input-block-level" /></h3>
                     </div>
                     <div class="control-group">
                         <label>
                             tags
-                            <h:inputText value="#{postBacker.editedPostTags}" styleClass="tag-picker">
+                            <h:inputText value="#{postAdminBacker.editedPostTags}" styleClass="tag-picker">
                             </h:inputText>
                         </label>
                         <label>
                             status
-                            <h:selectOneMenu value="#{postBacker.editedPostStatus}">
-                                <f:selectItems value="#{postBacker.postStatuses}" var="postStatus" itemLabel="#{postStatus.name}" itemValue="#{postStatus.name}" />
+                            <h:selectOneMenu value="#{postAdminBacker.editedPostStatus}">
+                                <f:selectItems value="#{postAdminBacker.postStatuses}" var="postStatus" itemLabel="#{postStatus.name}" itemValue="#{postStatus.name}" />
                             </h:selectOneMenu>
                         </label>
                         <label class="checkbox">
-                            <h:selectBooleanCheckbox value="#{postBacker.currentPost.pinned}" /> 
+                            <h:selectBooleanCheckbox value="#{postAdminBacker.currentPost.pinned}" /> 
                             pinned
                         </label>
                         <label class="checkbox">
                             <h:selectBooleanCheckbox 
-                                value="#{postBacker.currentPost.commentApprovalRequired}"
-                                disabled="#{postBacker.currentPost.lockedForComments}"/> 
+                                value="#{postAdminBacker.currentPost.commentApprovalRequired}"
+                                disabled="#{postAdminBacker.currentPost.lockedForComments}"/> 
                             comment approval required
                         </label>
                         <label class="checkbox">
                             <h:selectBooleanCheckbox 
-                                value="#{postBacker.currentPost.lockedForComments}" /> 
+                                value="#{postAdminBacker.currentPost.lockedForComments}" /> 
                             locked for comments
                         </label>
                     </div>
                     <div class="controls controls-row">
-                        <p:editor id="postTextEditor" value="#{postBacker.currentPost.body}" width="700" />
+                        <p:editor id="postTextEditor" value="#{postAdminBacker.currentPost.body}" width="700" />
                     </div>
                 </p:panel>
             </p:outputPanel>
