@@ -5,20 +5,16 @@
 package com.bitssc.bitsblog.backing;
 
 import com.bitssc.bitsblog.entity.Post;
-import com.bitssc.bitsblog.entity.PostStatus;
 import com.bitssc.bitsblog.facade.PostFacade;
 import com.bitssc.bitsblog.session.PostManager;
 import com.bitssc.bitsblog.session.ListsProvider;
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import org.apache.commons.lang3.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 
