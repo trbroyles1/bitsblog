@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../assets/layouts/admin.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="head">
+        <h:outputStylesheet name="plugins/select2/select2.css"></h:outputStylesheet>
+        <h:outputScript name="plugins/select2/select2.min.js"></h:outputScript>
+        <script type="text/javascript">
+            function setupTagPicker() {
+                $(".tag-picker").select2({
+                    tags: [#{postAdminBacker.postTags}],
+                    tokenSeparators: [",", " "],
+                    dropdownAutoWidth: true
+                });
+            }
+        </script>
+    </ui:define>  
+    <ui:define name="PageTitle">
+        posts
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="usersForm">
+            <p:outputPanel id="usersWrapper">
+                <p:outputPanel id="usersPanel" rendered="#{postAdminBacker.postListVisible}">
+                    <table class="table">
+                        <tr>
+                            <th>name</th>
+                            <th>login</th>
+                            <th>email</th>
+
+                        </tr>
+                        <ui:repeat var="post" value="#{postBacker.allPosts}">
+                            <tr>
+                                <td>
+                                    <p:commandLink 
+                                        id="rowDetailsLink" 
+                                        actionListener="#{postAdminBacker.showPostDetails(post.postId)}" 
+                                        update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper">
+                                        view
+                                    </p:commandLink>
+                                    | 
+                                    <p:commandLink
+                                        id="rowEditLink"
+                                        actionListener="#{postAdminBacker.showPostEdit(post.postId)}"
+                                        oncomplete="setupTagPicker()"
+                                        update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper">
+                                        edit
+                                    </p:commandLink>
+                                </td>
+                                <td>
+                                    #{post.title}
+                                </td>
+                                <td>
+                                    #{post.postAuthor.firstName}
+                                </td>
+                                <td>
+                                    #{post.postStatus.name}
+                                </td>
+                                <td>
+                                    #{post.dateCreated.toString()}
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:outputPanel id="postDetailsEditWrapper">
+                <ul class="inline">
+                    <li>
+                        <p:commandLink styleClass="btn" 
+                                       id="postListButton" 
+                                       actionListener="#{postAdminBacker.showPostList()}"
+                                       update=":postsForm:postDetailsEditWrapper,:postsForm:postsWrapper"
+                                       rendered="#{postAdminBacker.postDetailsVisible || postAdminBacker.postEditVisible}">
+                            <i class="icon-arrow-left"></i>back to list
+                        </p:commandLink>
+                    </li>
+                    <li>
+                        <p:commandLink styleClass="btn" 
+                                       id="postEditButton" 
+                                       actionListener="#{postAdminBacker.editPost(postAdminBacker.currentPost.postId)}"
+                                       oncomplete="setupTagPicker()"
+                                       update=":postsForm:postDetailsEditWrapper,:postsForm:postTextEditor"
+                                       rendered="#{postAdminBacker.postDetailsVisible}">
+                            <i class="icon-edit"></i> edit
+                        </p:commandLink>
+                    </li>
+                    <li>
+                        <p:commandLink   styleClass="btn btn-danger" 
+                                         id="postDeleteButton" 
+                                         actionListener="#{postAdminBacker.deletePost(postAdminBacker.currentPost.postId)}"
+                                         update="postsForm:postDetailsEditWrapper,postsForm:postsWrapper"
+                                         rendered="#{postAdminBacker.postDetailsVisible}">
+                            <i class="icon-trash"></i>delete (no confirm yet)
+                        </p:commandLink>    
+                    </li>
+                    <li>
+                        <p:commandLink  styleClass="btn btn-primary" 
+                                        id="postSaveButton" 
+                                        actionListener="#{postAdminBacker.savePost()}"
+                                        update=":postsForm:postDetailsEditWrapper"
+                                        rendered="#{postAdminBacker.postEditVisible}">
+                            <i class="icon-ok"></i> save
+                        </p:commandLink>
+
+                    </li>
+                    <li>
+                        <p:commandLink   styleClass="btn" 
+                                         id="postEditCancelButton" 
+                                         actionListener="#{postAdminBacker.cancelEdit()}"
+                                         immediate="true"
+                                         update="postsForm:postDetailsEditWrapper,postsForm:postsWrapper"
+                                         rendered="#{postAdminBacker.postEditVisible}">
+                            <i class="icon-remove"></i> cancel
+                        </p:commandLink>    
+                    </li>
+                </ul>
+                <p:panel id="postDetailsPanel" rendered="#{postAdminBacker.postDetailsVisible}">
+                    <h3>#{postAdminBacker.currentPost.title}</h3>
+                    <h5>by #{postAdminBacker.currentPost.postAuthor.firstName} on #{postAdminBacker.currentPost.postDateAsString}</h5>
+                    <h5>
+                        <ui:repeat var="tag" value="#{postAdminBacker.currentPost.tagList}">
+                            <u>#{tag.name}</u>
+                        </ui:repeat>
+                    </h5>
+                    <div class="controls controls-row control-group">
+                        <table><tr><td>
+
+                                    <label class="span1">
+                                        <h:outputText value="#{postAdminBacker.currentPost.postStatus.name}"/>
+                                    </label>
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.pinned}">
+                                        <label class="span1 text-left">
+                                            pinned
+                                        </label>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.commentApprovalRequired}">
+                                        <label class="span3 text-left">
+                                            comment approval required
+                                        </label>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{postAdminBacker.currentPost.lockedForComments}">
+                                        <label class="span2 text-left">
+                                            locked for comments
+                                        </label>
+                                    </p:outputPanel>
+
+                                </td></tr></table>
+                    </div>
+                    <p:accordionPanel>
+                        <p:tab title="post">
+                            <h:outputText value="#{postAdminBacker.currentPost.body}" escape="false" />
+                        </p:tab>
+                        <p:tab title="comments">
+                            <table class="table">
+                                <tr>
+                                    <th>actions</th>
+                                    <th>author email</th> 
+                                    <th>date/time</th>
+                                    <th>status</th>
+                                    <th>comment</th>
+                                </tr>
+                                <ui:repeat var="comment" value="#{commentsBacker.getAllCommentsForPost(postAdminBacker.currentPost.postId)}">
+                                    <tr>
+                                        <td>
+                                            <p:commandLink 
+                                                id="commentApproveLink" 
+                                                actionListener="#{commentsBacker.approveComment(comment.commentId)}" 
+                                                update=":postsForm:postDetailsPanel"
+                                                rendered="#{!comment.isApproved}">
+                                                approve
+                                            </p:commandLink>
+                                            <p:outputPanel rendered="#{!comment.isApproved}">
+                                                |
+                                            </p:outputPanel>
+                                            <p:commandLink 
+                                                id="authorBanLink" 
+                                                actionListener="#{commentAuthorsBacker.banCommentAuthor(comment.commentAuthor.commentAuthorId)}" 
+                                                update=":postsForm:postDetailsPanel">
+                                                ban author
+                                            </p:commandLink>
+                                        </td>
+                                        <td>#{comment.commentAuthor.emailAddress}</td>
+                                        <td>#{comment.friendlyPostTime}</td>
+                                        <td>#{comment.commentStatus.name}</td>
+                                        <td>#{comment.body}</td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
+                        </p:tab>
+                    </p:accordionPanel>
+                </p:panel>
+                <p:panel id="postEditPanel" rendered="#{postAdminBacker.postEditVisible}">
+                    <div class="controls controls-row">
+                        <h3><h:inputText value="#{postAdminBacker.currentPost.title}" styleClass="input-block-level" /></h3>
+                    </div>
+                    <div class="control-group">
+                        <label>
+                            tags
+                            <h:inputText value="#{postAdminBacker.editedPostTags}" styleClass="tag-picker">
+                            </h:inputText>
+                        </label>
+                        <label>
+                            status
+                            <h:selectOneMenu value="#{postAdminBacker.editedPostStatus}">
+                                <f:selectItems value="#{postAdminBacker.postStatuses}" var="postStatus" itemLabel="#{postStatus.name}" itemValue="#{postStatus.name}" />
+                            </h:selectOneMenu>
+                        </label>
+                        <label class="checkbox">
+                            <h:selectBooleanCheckbox value="#{postAdminBacker.currentPost.pinned}" /> 
+                            pinned
+                        </label>
+                        <label class="checkbox">
+                            <h:selectBooleanCheckbox 
+                                value="#{postAdminBacker.currentPost.commentApprovalRequired}"
+                                disabled="#{postAdminBacker.currentPost.lockedForComments}"/> 
+                            comment approval required
+                        </label>
+                        <label class="checkbox">
+                            <h:selectBooleanCheckbox 
+                                value="#{postAdminBacker.currentPost.lockedForComments}" /> 
+                            locked for comments
+                        </label>
+                    </div>
+                    <div class="controls controls-row">
+                        <p:editor id="postTextEditor" value="#{postAdminBacker.currentPost.body}" width="700" />
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog> 
+        </h:form>
+    </ui:define>
+
+</ui:composition>
